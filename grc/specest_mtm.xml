@@ -4,7 +4,7 @@
 	<key>specest_mtm</key>
 	<category>Spectrum Estimation</category>
 	<import>import specest</import>
-	<make>specest.mtm($N, $NW, $K, $weighting, $fftshift)</make>
+	<make>specest.mtm($N, $NW, $K, $weighting, $fftshift, $samp_rate, $rate)</make>
 	<!--<make>specest.welch($fftlen, $overlap, $malen, $fftshift, $wintype, $beta)</make>-->
 	<param>
 		<name>N</name>
@@ -38,7 +38,7 @@
 		</option>
 		<option>
 			<name>Eigenvalues</name>
-			<key>eigenvalues</key>
+			<key>'eigenvalues'</key>
 		</option>
 	</param>
 	<param>
@@ -53,6 +53,18 @@
 			<name>Shift DC to middle</name>
 			<key>True</key>
 		</option>
+	</param>
+	<param>
+		<name>Sample Rate</name>
+		<key>samp_rate</key>
+		<value>samp_rate</value>
+		<type>float</type>
+	</param>
+	<param>
+		<name>Refresh Rate</name>
+		<key>rate</key>
+		<value>10</value>
+		<type>int</type>
 	</param>
 	<sink>
 		<name>in</name>

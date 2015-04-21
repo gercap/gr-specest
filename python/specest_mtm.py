@@ -31,14 +31,15 @@ import specest_swig
 # @param[in] weighting: Which type of weighting to use for the eigenspectra. Choices can be 'unity','eigenvalues' or adaptive
 class mtm(gr.hier_block2):
     """ Estimates PSD using Thomson's multitaper method. """
-    def __init__(self, N=512 , NW=3 , K=5, weighting='adaptive', fftshift=False):
+    def __init__(self, N=512 , NW=3 , K=5, weighting='adaptive', fftshift=False, samp_rate = 1, rate = 10):
         gr.hier_block2.__init__(self, "mtm",
                 gr.io_signature(1, 1, gr.sizeof_gr_complex),
                 gr.io_signature(1, 1, gr.sizeof_float*N))
         self.check_parameters(N, NW, K)
 
         self.s2v = blocks.stream_to_vector(gr.sizeof_gr_complex, N)
-        self.connect(self, self.s2v)
+        self.one_in_n = blocks.keep_one_in_n(gr.sizeof_gr_complex * N, max(1, int(samp_rate/N/rate)))
+        self.connect(self, self.s2v, self.one_in_n)
 
         dpss = specest_gendpss.gendpss(N=N, NW=NW, K=K)
         self.mtm = [eigenspectrum(dpss.dpssarray[i], fftshift) for i in xrange(K)]
@@ -59,7 +60,8 @@ class mtm(gr.hier_block2):
                 self.lambdasum += dpss.lambdas[i]
             self.divide = blocks.multiply_const_vff([1./self.lambdasum]*N)
             self.sum = blocks.add_ff(N)
-            self.connect_mtm(K)
+            #self.connect_mtm(K)
+            self.connect_mtm_eig(K)
             self.connect(self.sum, self.divide, self)
         else:
             raise ValueError, 'weighting-type should be: adaptive, unity or eigenvalues'
@@ -68,8 +70,14 @@ class mtm(gr.hier_block2):
     def connect_mtm(self, K):
         """ Connects up all the eigenspectrum calculators. """
         for i in xrange(K):
-            self.connect(self.s2v, self.mtm[i])
+            self.connect(self.one_in_n, self.mtm[i])
             self.connect(self.mtm[i], (self.sum, i))
+
+    def connect_mtm_eig(self, K):
+        """ Connects up all the eigenspectrum calculators. """
+        for i in xrange(K):
+            self.connect(self.one_in_n, self.mtm[i])
+            self.connect(self.mtm[i], self.eigvalmulti[i], (self.sum, i))
 
 
     ## Checks the validity of parameters

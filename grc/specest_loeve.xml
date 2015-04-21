@@ -4,7 +4,7 @@
 	<key>specest_loeve</key>
 	<category>Spectrum Estimation</category>
 	<import>import specest</import>
-	<make>specest.loeve($N, $NW, $K, $fftshift)</make>
+	<make>specest.loeve($N, $NW, $K, $fftshift, $samp_rate, $rate)</make>
 	<!--<make>specest.welch($fftlen, $overlap, $malen, $fftshift, $wintype, $beta)</make>-->
 	<param>
 		<name>N</name>
@@ -37,43 +37,18 @@
 			<key>True</key>
 		</option>
 	</param>
-	<!--FIXME: Window Type selection does not work-->
-	<!--<param>-->
-		<!--<name>Window type</name>-->
-		<!--<key>wintype</key>-->
-		<!--<type>enum</type>-->
-		<!--<option>-->
-			<!--<name>Hamming</name>-->
-			<!--<key>gr.firdes.WIN_HAMMING</key>-->
-		<!--</option>-->
-		<!--<option>-->
-			<!--<name>Hann</name>-->
-			<!--<key>gr.firdes.WIN_HANN</key>-->
-		<!--</option>-->
-		<!--<option>-->
-			<!--<name>Blackman</name>-->
-			<!--<key>gr.firdes.WIN_BLACKMAN</key>-->
-		<!--</option>-->
-		<!--<option>-->
-			<!--<name>Rectangular</name>-->
-			<!--<key>gr.firdes.WIN_RECTANGULAR</key>-->
-		<!--</option>-->
-		<!--<option>-->
-			<!--<name>Kaiser</name>-->
-			<!--<key>gr.firdes.WIN_KAISER</key>-->
-		<!--</option>-->
-		<!--<option>-->
-			<!--<name>Hamming</name>-->
-			<!--<key>gr.firdes.WIN_BLACKMAN_hARRIS</key>-->
-		<!--</option>-->
-	<!--</param>-->
-	<!--<param>-->
-		<!--<name>Beta</name>-->
-		<!--<key>beta</key>-->
-		<!--<value>6.76</value>-->
-		<!--<type>real</type>-->
-	<!--</param>-->
-
+	<param>
+		<name>Sample Rate</name>
+		<key>samp_rate</key>
+		<value>samp_rate</value>
+		<type>float</type>
+	</param>
+	<param>
+		<name>Refresh Rate</name>
+		<key>rate</key>
+		<value>10</value>
+		<type>int</type>
+	</param>
 	<sink>
 		<name>in</name>
 		<type>complex</type>

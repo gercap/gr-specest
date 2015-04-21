@@ -31,7 +31,7 @@ import specest_swig
 # @param[in] weighting: Which type of weighting to use for the eigenspectra. Choices can be 'unity','eigenvalues' or adaptive
 class loeve(gr.hier_block2):
     """ Computes Loeve Spcetral Coherences """
-    def __init__(self, N=512 , NW=3 , K=5, fftshift=False):
+    def __init__(self, N=512 , NW=3 , K=5, fftshift=False, samp_rate = 1, rate = 10):
         gr.hier_block2.__init__(self, "loeve",
                 gr.io_signature(2, 2, gr.sizeof_gr_complex),
                 gr.io_signature(1, 1, gr.sizeof_float*N))
@@ -39,8 +39,10 @@ class loeve(gr.hier_block2):
 
         self.s2v1 = blocks.stream_to_vector(gr.sizeof_gr_complex, N)
         self.s2v2 = blocks.stream_to_vector(gr.sizeof_gr_complex, N)
-        self.connect((self, 0), self.s2v1)
-        self.connect((self, 1), self.s2v2)
+        self.one_in_n1 = blocks.keep_one_in_n(gr.sizeof_gr_complex * N, max(1, int(samp_rate/N/rate)))
+        self.one_in_n2 = blocks.keep_one_in_n(gr.sizeof_gr_complex * N, max(1, int(samp_rate/N/rate)))
+        self.connect((self, 0), self.s2v1, self.one_in_n1)
+        self.connect((self, 1), self.s2v2, self.one_in_n2)
 
         dpss = specest_gendpss.gendpss(N=N, NW=NW, K=K)
         self.mtm1 = [eigenspectrum(dpss.dpssarray[i], fftshift) for i in xrange(K)]
@@ -49,16 +51,16 @@ class loeve(gr.hier_block2):
         self.multipliers = [blocks.multiply_vcc(N) for i in xrange(K)]
 
         self.sum = blocks.add_vcc(N)
-        self.divide = blocks.multiply_const_vff([1./K]*N)
+        self.divide = blocks.multiply_const_vcc([1./K]*N)
         self.c2mag = blocks.complex_to_mag_squared(N)
         self.connect_loeve(K)
-        self.connect(self.sum, self.c2mag, self.divide, self)
+        self.connect(self.sum, self.divide, self.c2mag, self)
 
     def connect_loeve(self, K):
         """ Connects up all the eigenspectrum calculators. """
         for i in xrange(K):
-            self.connect(self.s2v1, self.mtm1[i])
-            self.connect(self.s2v2, self.mtm2[i])
+            self.connect(self.one_in_n1, self.mtm1[i])
+            self.connect(self.one_in_n2, self.mtm2[i])
             self.connect(self.mtm1[i], (self.multipliers[i], 0))
             self.connect(self.mtm2[i], (self.multipliers[i], 1))
             
