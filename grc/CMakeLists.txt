@@ -31,6 +31,7 @@ install(FILES
     specest_arburg_vcc.xml
     specest_burg.xml
     specest_welch.xml
+    specest_mtm.xml
     specest_esprit_vcf.xml
     #specest_esprit_spectrum_vcf.xml
     #specest_esprit.xml
@@ -41,5 +42,5 @@ install(FILES
     #specest_music.xml
     #specest_music_spectrum_vcf.xml 
     specest_spectrum_sink.xml
-    DESTINATION share/gnuradio/grc/blocks
+    specest_loeve.xml DESTINATION share/gnuradio/grc/blocks
 )

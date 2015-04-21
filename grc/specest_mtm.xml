@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<block>
+	<name>MTM Spectrum Estimator</name>
+	<key>specest_mtm</key>
+	<category>Spectrum Estimation</category>
+	<import>import specest</import>
+	<make>specest.mtm($N, $NW, $K, $weighting, $fftshift)</make>
+	<!--<make>specest.welch($fftlen, $overlap, $malen, $fftshift, $wintype, $beta)</make>-->
+	<param>
+		<name>N</name>
+		<key>N</key>
+		<value>512</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>NW</name>
+		<key>NW</key>
+		<value>3</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>K</name>
+		<key>K</key>
+		<value>5</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>Weighting</name>
+		<key>weighting</key>
+		<type>enum</type>
+		<option>
+			<name>Adaptive</name>
+			<key>'adaptive'</key>
+		</option>
+		<option>
+			<name>Unity</name>
+			<key>'unity'</key>
+		</option>
+		<option>
+			<name>Eigenvalues</name>
+			<key>eigenvalues</key>
+		</option>
+	</param>
+	<param>
+		<name>FFT Shift</name>
+		<key>fftshift</key>
+		<type>enum</type>
+		<option>
+			<name>No shift</name>
+			<key>False</key>
+		</option>
+		<option>
+			<name>Shift DC to middle</name>
+			<key>True</key>
+		</option>
+	</param>
+	<sink>
+		<name>in</name>
+		<type>complex</type>
+	</sink>
+	<source>
+		<name>out</name>
+		<type>float</type>
+		<vlen>$N</vlen>
+	</source>
+</block>
+

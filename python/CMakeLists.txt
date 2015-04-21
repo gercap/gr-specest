@@ -38,7 +38,7 @@ GR_PYTHON_INSTALL(
     specest_mtm.py
     specest_window.py
     spectrum_sink_gl.py
-    DESTINATION ${GR_PYTHON_DIR}/specest
+    loeve.py DESTINATION ${GR_PYTHON_DIR}/specest
 )
 
 message(STATUS "GR_PYTHON_DIR: ${GR_PYTHON_DIR}")
